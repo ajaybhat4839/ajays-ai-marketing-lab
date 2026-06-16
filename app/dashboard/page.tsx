@@ -1,232 +1,53 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import {
-  Sparkles,
-  BarChart3,
-  Search,
-  Target,
-  Rocket
-} from "lucide-react";
+import { useState } from "react";
 
+export default function Dashboard() {
+  const [prompt, setPrompt] = useState("");
+  const [output, setOutput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-export default function Home(){
+  const generate = async () => {
+    setLoading(true);
 
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
 
-return (
+    const data = await res.json();
+    setOutput(data.output);
+    setLoading(false);
+  };
 
-<div className="
-min-h-screen
-bg-black
-text-white
-overflow-hidden
-">
+  return (
+    <div className="min-h-screen bg-black text-white p-10">
+      <h1 className="text-3xl font-bold">AI Marketing Dashboard</h1>
 
+      <textarea
+        className="w-full mt-6 p-4 text-black"
+        placeholder="Write: Generate ad for gym business..."
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+      />
 
-{/* Background */}
+      <button
+        onClick={generate}
+        className="mt-4 px-6 py-3 bg-white text-black rounded"
+      >
+        {loading ? "Generating..." : "Generate"}
+      </button>
 
-<div className="
-absolute
-inset-0
-bg-gradient-to-br
-from-purple-900/30
-via-black
-to-blue-900/30
-"/>
-
-
-
-<div className="
-relative
-z-10
-p-8
-">
-
-
-<nav className="
-flex
-justify-between
-items-center
-">
-
-
-<h1 className="
-text-2xl
-font-bold
-">
-
-AJAY'S AI MARKETING LAB
-
-</h1>
-
-
-<Link
-href="/dashboard"
-className="
-px-6
-py-3
-rounded-full
-bg-white
-text-black
-font-semibold
-">
-
-Launch AI
-
-</Link>
-
-
-</nav>
-
-
-
-<section className="
-mt-32
-max-w-5xl
-">
-
-<motion.h1
-
-initial={{
-opacity:0,
-y:30
-}}
-
-animate={{
-opacity:1,
-y:0
-}}
-
-className="
-text-6xl
-font-bold
-leading-tight
-"
-
->
-
-Your Personal AI
-<br/>
-
-Digital Marketing
-<br/>
-
-Command Center 🚀
-
-</motion.h1>
-
-
-
-<p className="
-mt-8
-text-xl
-text-gray-400
-max-w-2xl
-">
-
-SEO intelligence, Ads analysis,
-content strategy and growth recommendations
-powered by AI.
-
-</p>
-
-
-
-<Link
-
-href="/dashboard"
-
-className="
-inline-flex
-mt-10
-gap-3
-items-center
-px-8
-py-4
-rounded-full
-bg-white/10
-border
-border-white/20
-hover:bg-white/20
-"
-
->
-
-<Rocket/>
-
-Start Growing
-
-</Link>
-
-
-</section>
-
-
-
-
-<div className="
-grid
-md:grid-cols-4
-gap-5
-mt-24
-">
-
-
-<Card icon={<Search/>} text="SEO Intelligence"/>
-
-<Card icon={<BarChart3/>} text="Ads Analytics"/>
-
-<Card icon={<Target/>} text="Campaign Strategy"/>
-
-<Card icon={<Sparkles/>} text="AI Growth"/>
-
-
+      <div className="mt-8 p-4 bg-white/10 rounded">
+        {output}
+      </div>
+    </div>
+  );
+}<div className="mt-10 space-x-4">
+  <a href="/dashboard">Dashboard</a>
+  <a href="/ads">Ads</a>
+  <a href="/seo">SEO</a>
+  <a href="/email">Email</a>
+  <a href="/blog">Blog</a>
 </div>
-
-
-</div>
-
-
-</div>
-
-)
-
-}
-
-
-
-
-function Card({
-icon,
-text
-}:{
-icon:any,
-text:string
-}){
-
-
-return (
-
-<div className="
-rounded-3xl
-bg-white/5
-border
-border-white/10
-p-8
-backdrop-blur-xl
-">
-
-
-{icon}
-
-<h3 className="mt-5 text-xl">
-{text}
-</h3>
-
-
-</div>
-
-)
-
-}
