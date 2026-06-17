@@ -18,7 +18,7 @@ return (
 <div className="min-h-screen bg-black text-white p-10">
 
 <h1 className="text-5xl font-bold">
-AI Marketing Command Center 🚀
+Thank you for choosing Ajay's Ai lab.Let's set up your workspace 🔒✨
 </h1>
 
 <p className="mt-4 text-gray-400">
