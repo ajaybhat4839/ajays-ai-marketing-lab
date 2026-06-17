@@ -2,38 +2,105 @@
 
 import { useState } from "react";
 
-export default function SEO() {
+export default function SEOPage() {
+
   const [prompt, setPrompt] = useState("");
-  const [output, setOutput] = useState("");
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const generate = async () => {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt: `Write SEO optimized blog post: ${prompt}`,
-      }),
-    });
 
-    const data = await res.json();
-    setOutput(data.output);
-  };
+  async function generateSEO() {
+
+    setLoading(true);
+    setResult("");
+
+    try {
+
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: `Create SEO content about: ${prompt}`,
+        }),
+      });
+
+
+      const data = await res.json();
+
+      setResult(data.result);
+
+    } catch (error) {
+
+      setResult("Something went wrong");
+
+    }
+
+    setLoading(false);
+  }
+
 
   return (
-    <div className="p-10 bg-black text-white min-h-screen">
-      <h1 className="text-3xl font-bold">SEO Writer</h1>
 
-      <textarea
-        className="w-full mt-5 p-3 text-black"
+    <div className="min-h-screen bg-black text-white p-10">
+
+      <h1 className="text-4xl font-bold">
+        SEO Generator
+      </h1>
+
+
+      <input
+
+        className="mt-8 p-4 w-full bg-white/10 rounded-xl"
+
+        placeholder="Enter SEO topic"
+
         value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
+
+        onChange={(e)=>setPrompt(e.target.value)}
+
       />
 
-      <button onClick={generate} className="mt-4 bg-white text-black px-4 py-2">
-        Generate SEO Article
+
+      <button
+
+        onClick={generateSEO}
+
+        className="mt-5 px-8 py-3 bg-white text-black rounded-xl"
+
+      >
+
+        Generate
+
       </button>
 
-      <pre className="mt-6 whitespace-pre-wrap">{output}</pre>
+
+      {loading && (
+
+        <p className="mt-5">
+          Generating...
+        </p>
+
+      )}
+
+
+      {result && (
+
+        <div className="mt-8 p-5 bg-white/10 rounded-xl">
+
+          <pre className="whitespace-pre-wrap">
+
+            {result}
+
+          </pre>
+
+        </div>
+
+      )}
+
+
     </div>
+
   );
 }
