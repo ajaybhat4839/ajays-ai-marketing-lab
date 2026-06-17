@@ -113,14 +113,38 @@ Welcome to Ajay's AI Lab 🔒
 </h1>
 
 
-<p className="
-mt-4
-text-gray-400
+<div className="mt-6 flex items-center gap-4">
+
+
+<div className="
+px-5
+py-3
+rounded-2xl
+bg-white/5
+border
+border-white/10
 ">
 
-Your AI powered digital marketing workspace.
+✨ AI Marketing Suite
 
-</p>
+</div>
+
+
+<div className="
+px-5
+py-3
+rounded-2xl
+bg-white/5
+border
+border-white/10
+">
+
+🚀 Growth Mode Active
+
+</div>
+
+
+</div>
 
 
 
