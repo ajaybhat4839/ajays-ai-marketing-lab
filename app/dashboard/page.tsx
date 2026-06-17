@@ -37,7 +37,7 @@ text-5xl
 font-bold
 ">
 
-Welcome to Ajay's AI Lab
+
 
 </h1>
 
@@ -108,7 +108,7 @@ text-5xl
 font-bold
 ">
 
-Welcome to Ajay's AI Lab 
+Welcome to Ajay's AI Lab 🔒
 
 </h1>
 
