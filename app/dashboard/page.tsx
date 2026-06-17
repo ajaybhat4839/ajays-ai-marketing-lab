@@ -1,53 +1,133 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import {
+  Search,
+  Mail,
+  PenTool,
+  Target,
+  MessageSquare,
+  BarChart3
+} from "lucide-react";
 
-export default function Dashboard() {
-  const [prompt, setPrompt] = useState("");
-  const [output, setOutput] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const generate = async () => {
-    setLoading(true);
+export default function Dashboard(){
 
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
+return (
 
-    const data = await res.json();
-    setOutput(data.output);
-    setLoading(false);
-  };
+<div className="min-h-screen bg-black text-white p-10">
 
-  return (
-    <div className="min-h-screen bg-black text-white p-10">
-      <h1 className="text-3xl font-bold">AI Marketing Dashboard</h1>
+<h1 className="text-5xl font-bold">
+AI Marketing Command Center 🚀
+</h1>
 
-      <textarea
-        className="w-full mt-6 p-4 text-black"
-        placeholder="Write: Generate ad for gym business..."
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-      />
+<p className="mt-4 text-gray-400">
+Create, optimize and scale your marketing with AI.
+</p>
 
-      <button
-        onClick={generate}
-        className="mt-4 px-6 py-3 bg-white text-black rounded"
-      >
-        {loading ? "Generating..." : "Generate"}
-      </button>
 
-      <div className="mt-8 p-4 bg-white/10 rounded">
-        {output}
-      </div>
-    </div>
-  );
-}<div className="mt-10 space-x-4">
-  <a href="/dashboard">Dashboard</a>
-  <a href="/ads">Ads</a>
-  <a href="/seo">SEO</a>
-  <a href="/email">Email</a>
-  <a href="/blog">Blog</a>
+<div className="
+grid
+md:grid-cols-3
+gap-6
+mt-12
+">
+
+
+<Card
+title="SEO Generator"
+icon={<Search/>}
+link="/dashboard/seo"
+/>
+
+
+<Card
+title="Blog Writer"
+icon={<PenTool/>}
+link="/dashboard/blog"
+/>
+
+
+<Card
+title="Email Writer"
+icon={<Mail/>}
+link="/dashboard/email"
+/>
+
+
+<Card
+title="Ads Creator"
+icon={<Target/>}
+link="/dashboard/ads"
+/>
+
+
+<Card
+title="AI Marketing Chat"
+icon={<MessageSquare/>}
+link="/chat"
+/>
+
+
+<Card
+title="Analytics"
+icon={<BarChart3/>}
+link="#"
+/>
+
+
 </div>
+
+</div>
+
+)
+
+}
+
+
+
+function Card({
+title,
+icon,
+link
+}:any){
+
+
+return (
+
+<Link href={link}>
+
+<div className="
+p-8
+rounded-3xl
+bg-white/5
+border
+border-white/10
+hover:bg-white/10
+transition
+cursor-pointer
+">
+
+
+<div className="text-3xl">
+{icon}
+</div>
+
+
+<h2 className="mt-5 text-xl font-bold">
+{title}
+</h2>
+
+
+<p className="mt-2 text-gray-400">
+Launch tool →
+</p>
+
+
+</div>
+
+</Link>
+
+)
+
+}
