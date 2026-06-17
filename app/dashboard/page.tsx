@@ -36,6 +36,7 @@ md:block
 text-5xl
 font-bold
 ">
+Data-Driven & Futuristic
 
 
 
@@ -139,7 +140,7 @@ border
 border-white/10
 ">
 
-🚀 Growth Mode Active
+✨ Growth Mode Active
 
 </div>
 
