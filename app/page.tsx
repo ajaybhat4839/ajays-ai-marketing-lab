@@ -1,39 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Bot, Send } from "lucide-react";
-
-export default function Dashboard() {
-
-const [message,setMessage] = useState("");
-const [reply,setReply] = useState("");
-const [loading,setLoading] = useState(false);
+import Link from "next/link";
 
 
-async function sendMessage(){
-
-if(!message) return;
-
-setLoading(true);
-
-const res = await fetch("/api/chat",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-message
-})
-});
-
-
-const data = await res.json();
-
-setReply(data.reply);
-
-setLoading(false);
-
-}
+export default function Home(){
 
 
 return (
@@ -42,118 +12,209 @@ return (
 min-h-screen
 bg-black
 text-white
-p-8
+p-10
+">
+
+
+<nav className="
+flex
+justify-between
+items-center
 ">
 
 
 <h1 className="
-text-4xl
+text-3xl
 font-bold
 ">
 
-AI Growth Command Center
+Ajay's AI Lab 🚀
 
 </h1>
 
 
-<div className="
-mt-10
-max-w-4xl
-rounded-3xl
-border
-border-white/10
-bg-white/5
-p-8
-backdrop-blur-xl
-">
+
+<div className="space-x-4">
 
 
-<div className="flex gap-3 items-center">
+<Link href="/login">
 
-<Bot/>
-
-<h2 className="text-xl">
-Ajay's AI Marketing Assistant
-</h2>
-
-</div>
-
-
-
-<div className="
-mt-8
-min-h-[250px]
-rounded-xl
-bg-black/40
-p-5
-">
-
-
-{
-loading
-?
-<p>AI is thinking...</p>
-:
-<p className="text-gray-300">
-{reply || "Ask me anything about SEO, Ads, Content or Growth 🚀"}
-</p>
-}
-
-
-</div>
-
-
-
-
-<div className="
-mt-6
-flex
-gap-3
-">
-
-
-<input
-
-value={message}
-
-onChange={(e)=>setMessage(e.target.value)}
-
-placeholder="Analyze my marketing strategy..."
-
-className="
-flex-1
-rounded-xl
-bg-white/10
-p-4
-outline-none
-"
-
-/>
-
-
-
-<button
-
-onClick={sendMessage}
-
-className="
-rounded-xl
-bg-white/20
+<button className="
 px-6
-"
+py-3
+rounded-xl
+bg-white
+text-black
+">
 
->
+Login
 
-<Send/>
+</button>
+
+</Link>
+
+
+
+<Link href="/signup">
+
+<button className="
+px-6
+py-3
+rounded-xl
+border
+border-white/20
+">
+
+Signup
+
+</button>
+
+</Link>
+
+
+</div>
+
+
+</nav>
+
+
+
+
+
+<section className="
+mt-32
+text-center
+">
+
+
+<h1 className="
+text-6xl
+font-bold
+">
+
+AI Powered
+<br/>
+
+Marketing Growth Engine
+
+</h1>
+
+
+
+<p className="
+mt-6
+text-xl
+text-gray-400
+">
+
+Generate SEO, blogs, ads and marketing strategies using AI.
+
+</p>
+
+
+
+
+<Link href="/signup">
+
+
+<button className="
+mt-10
+px-10
+py-4
+rounded-xl
+bg-white
+text-black
+text-lg
+">
+
+Start Building 🚀
 
 </button>
 
 
-</div>
+</Link>
+
+
+</section>
+
+
+
+
+
+
+
+<div className="
+grid
+md:grid-cols-3
+gap-6
+mt-32
+">
+
+
+<Card
+title="SEO Intelligence"
+text="Create strategies that improve rankings"
+/>
+
+
+<Card
+title="AI Content"
+text="Generate blogs and marketing copy"
+/>
+
+
+<Card
+title="Ad Creator"
+text="Build high converting campaigns"
+/>
 
 
 
 </div>
+
+
+
+</div>
+
+)
+
+}
+
+
+
+
+
+function Card({title,text}:any){
+
+return (
+
+<div className="
+p-8
+rounded-3xl
+bg-white/5
+border
+border-white/10
+">
+
+
+<h2 className="
+text-2xl
+font-bold
+">
+
+{title}
+
+</h2>
+
+
+<p className="
+mt-3
+text-gray-400
+">
+
+{text}
+
+</p>
 
 
 </div>

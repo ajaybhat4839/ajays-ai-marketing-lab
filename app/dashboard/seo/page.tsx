@@ -1,106 +1,284 @@
 "use client";
 
 import { useState } from "react";
-
-export default function SEOPage() {
-
-  const [prompt, setPrompt] = useState("");
-  const [result, setResult] = useState("");
-  const [loading, setLoading] = useState(false);
+import { supabase } from "@/lib/supabase";
 
 
-  async function generateSEO() {
+export default function SEOPage(){
 
-    setLoading(true);
-    setResult("");
-
-    try {
-
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: `Create SEO content about: ${prompt}`,
-        }),
-      });
+const [prompt,setPrompt]=useState("");
+const [result,setResult]=useState("");
+const [loading,setLoading]=useState(false);
+const [error,setError]=useState("");
 
 
-      const data = await res.json();
 
-      setResult(data.result);
-
-    } catch (error) {
-
-      setResult("Something went wrong");
-
-    }
-
-    setLoading(false);
-  }
+async function generate(){
 
 
-  return (
+if(!prompt.trim()){
 
-    <div className="min-h-screen bg-black text-white p-10">
+setError("Please enter a website or topic");
 
-      <h1 className="text-4xl font-bold">
-        SEO Generator
-      </h1>
+return;
 
-
-      <input
-
-        className="mt-8 p-4 w-full bg-white/10 rounded-xl"
-
-        placeholder="Enter SEO topic"
-
-        value={prompt}
-
-        onChange={(e)=>setPrompt(e.target.value)}
-
-      />
+}
 
 
-      <button
-
-        onClick={generateSEO}
-
-        className="mt-5 px-8 py-3 bg-white text-black rounded-xl"
-
-      >
-
-        Generate
-
-      </button>
+setLoading(true);
+setResult("");
+setError("");
 
 
-      {loading && (
 
-        <p className="mt-5">
-          Generating...
-        </p>
-
-      )}
+try {
 
 
-      {result && (
+const res = await fetch("/api/generate",{
 
-        <div className="mt-8 p-5 bg-white/10 rounded-xl">
+method:"POST",
 
-          <pre className="whitespace-pre-wrap">
+headers:{
+"Content-Type":"application/json"
+},
 
-            {result}
+body:JSON.stringify({
 
-          </pre>
+prompt:
+`Create a detailed SEO strategy for:
+${prompt}`
 
-        </div>
+})
 
-      )}
+});
 
 
-    </div>
 
-  );
+const data = await res.json();
+
+
+
+if(!res.ok){
+
+throw new Error(
+data.error || "AI generation failed"
+);
+
+}
+
+
+
+setResult(data.result);
+
+
+
+/*
+ Save generation history
+*/
+
+
+const {
+data:userData
+}= await supabase.auth.getUser();
+
+
+
+if(userData.user){
+
+
+await supabase
+.from("generations")
+.insert({
+
+user_id:userData.user.id,
+
+type:"SEO",
+
+prompt:prompt,
+
+result:data.result
+
+});
+
+
+}
+
+
+
+}
+
+catch(err:any){
+
+
+setError(err.message);
+
+
+}
+
+
+setLoading(false);
+
+
+}
+
+
+
+
+
+return (
+
+<div className="
+min-h-screen
+bg-black
+text-white
+p-10
+">
+
+
+<h1 className="
+text-4xl
+font-bold
+">
+
+SEO Generator 🚀
+
+</h1>
+
+
+
+<p className="
+mt-3
+text-gray-400
+">
+
+Create SEO strategies powered by AI
+
+</p>
+
+
+
+
+<textarea
+
+
+className="
+mt-8
+w-full
+min-h-[180px]
+p-5
+rounded-xl
+bg-white/10
+border
+border-white/10
+outline-none
+"
+
+placeholder="Enter website/topic"
+
+value={prompt}
+
+onChange={(e)=>setPrompt(e.target.value)}
+
+/>
+
+
+
+
+<button
+
+
+onClick={generate}
+
+
+disabled={loading}
+
+
+className="
+mt-5
+px-8
+py-3
+bg-white
+text-black
+rounded-xl
+disabled:opacity-50
+"
+
+
+>
+
+
+{
+loading
+?
+"Generating..."
+:
+"Generate SEO"
+}
+
+
+</button>
+
+
+
+
+{
+error && (
+
+<p className="
+mt-5
+text-red-400
+">
+
+{error}
+
+</p>
+
+)
+
+}
+
+
+
+
+{
+result && (
+
+<div className="
+mt-8
+p-6
+bg-white/10
+border
+border-white/10
+rounded-xl
+whitespace-pre-line
+">
+
+
+<h2 className="
+text-xl
+font-bold
+mb-4
+">
+
+SEO Result
+
+</h2>
+
+
+{result}
+
+
+</div>
+
+)
+
+}
+
+
+
+
+</div>
+
+)
+
 }

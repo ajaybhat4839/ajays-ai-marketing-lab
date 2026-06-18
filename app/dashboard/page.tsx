@@ -1,26 +1,109 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect,useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+
 import {
-  Search,
-  Mail,
-  PenTool,
-  Target,
-  MessageSquare,
-  BarChart3,
-  Home
+Home,
+Search,
+PenTool,
+Mail,
+Target,
+MessageSquare
 } from "lucide-react";
+
+import Link from "next/link";
 
 
 export default function Dashboard(){
 
+const router=useRouter();
+
+const [history,setHistory]=useState<any[]>([]);
+
+
+
+useEffect(()=>{
+
+
+async function load(){
+
+
+const {
+data
+}=await supabase.auth.getSession();
+
+
+
+if(!data.session){
+
+router.push("/login");
+return;
+
+}
+
+
+
+const {data:items}=await supabase
+
+.from("generations")
+
+.select("*")
+
+.eq(
+"user_id",
+data.session.user.id
+)
+
+.order(
+"created_at",
+{
+ascending:false
+}
+)
+
+.limit(5);
+
+
+
+setHistory(items || []);
+
+
+
+}
+
+
+load();
+
+
+},[router]);
+
+
+
+
+
+async function logout(){
+
+await supabase.auth.signOut();
+
+router.push("/login");
+
+}
+
+
+
+
 
 return (
 
-<div className="min-h-screen bg-black text-white flex">
+<div className="
+min-h-screen
+bg-black
+text-white
+flex
+">
 
-
-{/* Sidebar */}
 
 <aside className="
 w-64
@@ -33,12 +116,12 @@ md:block
 
 
 <h1 className="
-text-5xl
+text-3xl
 font-bold
+mb-10
 ">
-Data-Driven & Futuristic
 
-
+Ajay's AI Lab
 
 </h1>
 
@@ -46,46 +129,15 @@ Data-Driven & Futuristic
 <nav className="space-y-4">
 
 
-<Menu
-icon={<Home/>}
-name="Dashboard"
-link="/dashboard"
-/>
+<Menu icon={<Home/>} name="Dashboard" link="/dashboard"/>
 
+<Menu icon={<Search/>} name="SEO Generator" link="/dashboard/seo"/>
 
-<Menu
-icon={<Search/>}
-name="SEO Generator"
-link="/dashboard/seo"
-/>
+<Menu icon={<PenTool/>} name="Blog Writer" link="/dashboard/blog"/>
 
+<Menu icon={<Mail/>} name="Email Writer" link="/dashboard/email"/>
 
-<Menu
-icon={<PenTool/>}
-name="Blog Writer"
-link="/dashboard/blog"
-/>
-
-
-<Menu
-icon={<Mail/>}
-name="Email Writer"
-link="/dashboard/email"
-/>
-
-
-<Menu
-icon={<Target/>}
-name="Ads Creator"
-link="/dashboard/ads"
-/>
-
-
-<Menu
-icon={<MessageSquare/>}
-name="AI Chat"
-link="/chat"
-/>
+<Menu icon={<Target/>} name="Ads Creator" link="/dashboard/ads"/>
 
 
 </nav>
@@ -96,11 +148,16 @@ link="/chat"
 
 
 
-{/* Main */}
 
 <main className="
 flex-1
 p-10
+">
+
+
+<div className="
+flex
+justify-between
 ">
 
 
@@ -109,76 +166,109 @@ text-5xl
 font-bold
 ">
 
-Welcome to Ajay's AI Lab 🔒
+Welcome 👋
 
 </h1>
 
 
-<div className="mt-6 flex items-center gap-4">
 
+<button
 
-<div className="
+onClick={logout}
+
+className="
+bg-red-500
 px-5
 py-3
-rounded-2xl
-bg-white/5
-border
-border-white/10
-">
+rounded-xl
+"
 
-✨ AI Marketing Suite
+>
 
-</div>
+Logout
 
-
-<div className="
-px-5
-py-3
-rounded-2xl
-bg-white/5
-border
-border-white/10
-">
-
-✨ Growth Mode Active
-
-</div>
+</button>
 
 
 </div>
+
 
 
 
 
 <div className="
-grid
-md:grid-cols-3
-gap-6
 mt-12
+p-6
+rounded-3xl
+bg-white/5
+border
+border-white/10
 ">
 
 
+<h2 className="
+text-2xl
+font-bold
+">
 
-<Card
-title="SEO Intelligence"
-text="Rank higher on Google"
-/>
+Recent AI Generations
 
-
-<Card
-title="Content Creation"
-text="Generate blogs instantly"
-/>
+</h2>
 
 
-<Card
-title="Marketing Strategy"
-text="Build campaigns faster"
-/>
+
+{
+history.length===0 ?
+
+<p className="text-gray-400 mt-4">
+No generations yet
+</p>
+
+
+:
+
+history.map(item=>(
+
+<div
+
+key={item.id}
+
+className="
+mt-4
+p-4
+bg-black
+rounded-xl
+"
+
+>
+
+
+<h3 className="font-bold">
+
+{item.type}
+
+</h3>
+
+
+<p className="text-gray-400">
+
+{item.prompt}
+
+</p>
+
+
+</div>
+
+
+))
+
+}
 
 
 
 </div>
+
+
 
 
 </main>
@@ -193,12 +283,8 @@ text="Build campaigns faster"
 
 
 
-function Menu({
-icon,
-name,
-link
-}:any){
 
+function Menu({icon,name,link}:any){
 
 return (
 
@@ -207,11 +293,9 @@ return (
 <div className="
 flex
 gap-3
-items-center
 p-3
 rounded-xl
 hover:bg-white/10
-cursor-pointer
 ">
 
 {icon}
@@ -221,52 +305,6 @@ cursor-pointer
 </div>
 
 </Link>
-
-)
-
-}
-
-
-
-
-function Card({
-title,
-text
-}:any){
-
-
-return (
-
-<div className="
-p-8
-rounded-3xl
-bg-white/5
-border
-border-white/10
-">
-
-
-<h2 className="
-text-2xl
-font-bold
-">
-
-{title}
-
-</h2>
-
-
-<p className="
-mt-3
-text-gray-400
-">
-
-{text}
-
-</p>
-
-
-</div>
 
 )
 
