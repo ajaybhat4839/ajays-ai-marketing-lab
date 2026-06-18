@@ -1,37 +1,45 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+// Initialize the Gemini client
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
 });
 
 export async function POST(req: Request) {
   try {
     const { prompt } = await req.json();
 
-    const response = await client.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        {
-          role: "system",
-          content: "You are a digital marketing AI expert",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
+    if (!prompt) {
+      return NextResponse.json(
+        { error: "Prompt is required" },
+        { status: 400 }
+      );
+    }
+
+    // Call the live Gemini API with the prompt
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash", // Fast, recommended model
+      contents: prompt,
     });
 
+    const result = response.text || "I was unable to generate content. Please try again.";
+
+    // Return the result matching your frontend expectations
     return NextResponse.json({
-      result: response.choices[0].message.content,
+      result: result
     });
+
   } catch (error) {
-    console.log(error);
-
-    return NextResponse.json({
-      result:
-        "AI is in demo mode. SEO: optimize content, use keywords, improve backlinks, run ads.",
-    });
+    console.error("Gemini Generate Error:", error);
+    
+    return NextResponse.json(
+      {
+        error: "Failed to connect to Gemini API"
+      },
+      {
+        status: 500
+      }
+    );
   }
 }
