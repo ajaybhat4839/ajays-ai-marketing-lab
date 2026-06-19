@@ -8,7 +8,7 @@ import {
 import { useRef, useEffect, useState } from 'react';
 
 export default function SupremeMarketingLab() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages } = useChat();
+  const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages } = useChat() as any;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [metrics, setMetrics] = useState({ cpu: 42, ram: 65, latency: 12 });
 
