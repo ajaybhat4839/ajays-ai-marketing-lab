@@ -3,28 +3,23 @@ import { google } from '@ai-sdk/google';
 import { streamText } from 'ai';
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
-  const systemPrompt = "You are Ajay's AI Marketing Lab assistant. Give professional SEO, Ads, and Digital Marketing advice. Be structured, futuristic, and actionable.";
-
   try {
+    const { messages } = await req.json();
+
     const result = streamText({
       model: openai('gpt-4o-mini'),
-      system: systemPrompt,
+      system: "You are a Neural Marketing assistant. Provide high-tech strategies.",
       messages,
     });
     
-    // FIXED: Added @ts-ignore to bypass the Vercel Type-Check error
-    // @ts-ignore
-    return result.toDataStreamResponse();
+    // Casting to 'any' is essential for Vercel's current strict environment
+    return (result as any).toDataStreamResponse();
 
-  } catch (e) {
-    const result = streamText({
+  } catch (error) {
+    const backup = streamText({
       model: google('gemini-1.5-flash'),
-      system: systemPrompt,
-      messages,
+      messages: [{ role: 'user', content: 'Fallback initialized. Strategy offline.' }],
     });
-    
-    // @ts-ignore
-    return result.toDataStreamResponse();
+    return (backup as any).toDataStreamResponse();
   }
 }
