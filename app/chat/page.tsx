@@ -1,14 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+
 
 export default function ChatPage() {
+
+  const router = useRouter();
 
   const [message, setMessage] = useState("");
   const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [model, setModel] = useState("gemini");
+
+  useEffect(()=>{
+
+    async function checkUser(){
+
+      const { data } = await supabase.auth.getUser();
+
+      if(!data.user){
+        router.push("/login");
+      }
+
+    }
+
+    checkUser();
+
+  },[router]);
+
 
 
   async function sendMessage() {
@@ -18,45 +39,47 @@ export default function ChatPage() {
     setLoading(true);
     setReply("");
 
+
     try {
 
       const res = await fetch("/api/chat", {
 
         method: "POST",
 
-        headers: {
-          "Content-Type": "application/json"
+        headers:{
+          "Content-Type":"application/json"
         },
 
-        body: JSON.stringify({
-          message,
-          model
+        body:JSON.stringify({
+          message
         })
 
       });
 
 
+
       const data = await res.json();
 
 
-      if (data.error) {
+      if(data.error){
 
         setReply(`Error: ${data.error}`);
 
-      } else {
+      }else{
 
         setReply(data.reply);
 
       }
 
 
-    } catch(err) {
+    } catch(err){
 
       console.log(err);
 
       setReply(
         "Failed to connect to AI Assistant."
       );
+
 
     } finally {
 
@@ -65,6 +88,7 @@ export default function ChatPage() {
     }
 
   }
+
 
 
   return (
@@ -82,25 +106,8 @@ export default function ChatPage() {
       </p>
 
 
+
       <div className="mt-8">
-
-
-        <select
-          value={model}
-          onChange={(e)=>setModel(e.target.value)}
-          className="bg-white text-black p-3 rounded-xl"
-        >
-
-          <option value="gemini">
-            Google Gemini
-          </option>
-
-          <option value="openai">
-            OpenAI GPT
-          </option>
-
-        </select>
-
 
 
         <textarea
@@ -112,7 +119,6 @@ export default function ChatPage() {
           placeholder="Create SEO strategy..."
 
           className="
-          mt-5
           w-full
           h-40
           p-5
