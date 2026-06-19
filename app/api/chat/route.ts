@@ -2,20 +2,27 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
 
 const gemini = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
 
+const systemPrompt =
+"You are Ajay's AI Marketing Lab assistant. Give professional SEO, Ads, Content and Digital Marketing advice. Be structured and actionable.";
+
+
+
 export async function POST(req: Request) {
 
   try {
 
-    const { message, model } = await req.json();
+    const { message } = await req.json();
 
 
     if (!message) {
@@ -26,58 +33,75 @@ export async function POST(req: Request) {
     }
 
 
-    // OPENAI MODE
-    if (model === "openai") {
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4.1-mini",
-        messages: [
-          {
-            role: "system",
-            content:
-            "You are Ajay's AI Marketing Lab assistant. Give professional SEO, Ads, Content and Digital Marketing advice."
-          },
-          {
-            role: "user",
-            content: message
-          }
-        ]
-      });
+    // TRY OPENAI FIRST
+    try {
+
+      const response =
+        await openai.chat.completions.create({
+
+          model: "gpt-4.1-mini",
+
+          messages: [
+            {
+              role: "system",
+              content: systemPrompt
+            },
+            {
+              role: "user",
+              content: message
+            }
+          ]
+
+        });
 
 
       return NextResponse.json({
-        reply: response.choices[0].message.content
+        reply: response.choices[0].message.content,
+        provider: "openai"
       });
+
+
+    } catch(openaiError) {
+
+      console.log(
+        "OpenAI unavailable, switching to Gemini"
+      );
 
     }
 
 
 
-    // GEMINI MODE (default)
 
-    const response = await gemini.models.generateContent({
+    // GEMINI FALLBACK
 
-      model: "gemini-2.5-flash",
+    const response =
+      await gemini.models.generateContent({
 
-      contents: message,
+        model: "gemini-2.5-flash",
 
-      config: {
-        systemInstruction:
-        "You are Ajay's AI Marketing Lab assistant. Give professional SEO, Ads, Content and Digital Marketing advice."
-      }
+        contents: message,
 
-    });
+        config: {
+          systemInstruction: systemPrompt
+        }
+
+      });
+
 
 
     return NextResponse.json({
-      reply: response.text
+      reply: response.text,
+      provider: "gemini"
     });
 
 
 
   } catch(error) {
 
+
     console.log(error);
+
 
     return NextResponse.json(
       {
