@@ -1,11 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020202;
+  --background: #000000;
   --foreground: #ffffff;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: black;
+  color: white;
+  /* Tech Background Grid */
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Fix for those giant icons: forces icons to a normal size */
+svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Wonderful Glass Cards */
+.bento-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  backdrop-filter: blur(10px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-card:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(168, 85, 247, 0.03);
+  transform: translateY(-5px);
 }
