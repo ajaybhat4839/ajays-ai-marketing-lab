@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 
 export default function SEOPage(){
@@ -19,7 +19,6 @@ async function generate(){
 if(!prompt.trim()){
 
 setError("Please enter a website or topic");
-
 return;
 
 }
@@ -72,9 +71,8 @@ setResult(data.result);
 
 
 
-/*
- Save generation history
-*/
+const supabase = getSupabase();
+
 
 
 const {
@@ -94,7 +92,7 @@ user_id:userData.user.id,
 
 type:"SEO",
 
-prompt:prompt,
+prompt,
 
 result:data.result
 
@@ -109,9 +107,7 @@ result:data.result
 
 catch(err:any){
 
-
 setError(err.message);
-
 
 }
 
@@ -160,7 +156,6 @@ Create SEO strategies powered by AI
 
 <textarea
 
-
 className="
 mt-8
 w-full
@@ -186,12 +181,9 @@ onChange={(e)=>setPrompt(e.target.value)}
 
 <button
 
-
 onClick={generate}
 
-
 disabled={loading}
-
 
 className="
 mt-5
@@ -202,7 +194,6 @@ text-black
 rounded-xl
 disabled:opacity-50
 "
-
 
 >
 
