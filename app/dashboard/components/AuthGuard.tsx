@@ -2,54 +2,53 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 
 export default function AuthGuard({
-children
+  children
 }:{
-children:React.ReactNode
-}){
+  children: React.ReactNode
+}) {
 
 
-const router = useRouter();
-
-
-
-useEffect(()=>{
-
-
-async function check(){
-
-
-const {
-data
-}=await supabase.auth.getSession();
+  const router = useRouter();
 
 
 
-if(!data.session){
-
-router.push("/login");
-
-}
+  useEffect(() => {
 
 
-}
+    async function check() {
 
 
-
-check();
-
+      const supabase = getSupabase();
 
 
-},[router]);
+      const {
+        data
+      } = await supabase.auth.getSession();
 
 
 
+      if (!data.session) {
+
+        router.push("/login");
+
+      }
 
 
-return <>{children}</>
+    }
 
+
+    check();
+
+
+
+  }, [router]);
+
+
+
+  return <>{children}</>;
 
 }

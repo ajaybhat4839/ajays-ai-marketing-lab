@@ -2,17 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
+
 
 export default function SignupPage() {
 
   const router = useRouter();
+
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
   });
+
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,10 +26,12 @@ export default function SignupPage() {
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement>
   ) {
+
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
+
   }
 
 
@@ -42,20 +47,28 @@ export default function SignupPage() {
 
 
     if (!form.name || !form.email || !form.password) {
+
       setError("All fields are required");
       return;
+
     }
 
 
     if (form.password.length < 6) {
+
       setError("Password must be at least 6 characters");
       return;
+
     }
+
 
 
     try {
 
       setLoading(true);
+
+
+      const supabase = getSupabase();
 
 
       const { data, error } =
@@ -65,9 +78,11 @@ export default function SignupPage() {
           password: form.password,
 
           options: {
+
             data: {
               name: form.name,
             },
+
           },
 
         });
@@ -88,7 +103,9 @@ export default function SignupPage() {
 
 
       setTimeout(() => {
+
         router.push("/login");
+
       },1500);
 
 
@@ -96,6 +113,7 @@ export default function SignupPage() {
     } catch(err:any){
 
       setError(err.message);
+
 
     } finally {
 
@@ -122,67 +140,84 @@ export default function SignupPage() {
 
 
 
-        <form 
+        <form
           onSubmit={handleSubmit}
           className="space-y-4"
         >
 
 
           <input
+
             name="name"
             placeholder="Full Name"
             value={form.name}
             onChange={handleChange}
             className="w-full p-3 border rounded-lg"
+
           />
 
 
 
           <input
+
             type="email"
             name="email"
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
             className="w-full p-3 border rounded-lg"
+
           />
 
 
 
           <input
+
             type="password"
             name="password"
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
             className="w-full p-3 border rounded-lg"
+
           />
 
 
 
           {error && (
+
             <p className="text-red-500 text-sm">
+
               {error}
+
             </p>
+
           )}
 
 
 
           {success && (
+
             <p className="text-green-600 text-sm">
+
               {success}
+
             </p>
+
           )}
 
 
 
 
           <button
+
             disabled={loading}
+
             className="w-full bg-black text-white py-3 rounded-lg"
+
           >
 
-            {loading 
+            {loading
               ? "Creating..."
               : "Sign Up"}
 
@@ -198,11 +233,13 @@ export default function SignupPage() {
 
           Already have account?{" "}
 
-          <a 
+          <a
             href="/login"
             className="text-blue-600"
           >
+
             Login
+
           </a>
 
         </p>
@@ -210,7 +247,9 @@ export default function SignupPage() {
 
       </div>
 
+
     </div>
 
   );
+
 }

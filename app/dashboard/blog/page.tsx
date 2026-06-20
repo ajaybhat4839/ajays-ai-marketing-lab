@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 
 export default function Blog(){
@@ -19,6 +19,9 @@ async function generate(){
 setLoading(true);
 setOutput("");
 
+
+
+try{
 
 
 const res = await fetch("/api/generate",{
@@ -51,6 +54,10 @@ data.result || data.error
 
 
 
+const supabase = getSupabase();
+
+
+
 const {
 data:userData
 }=await supabase.auth.getUser();
@@ -77,6 +84,15 @@ result:data.result
 
 }
 
+
+
+}
+
+catch(err:any){
+
+setOutput(err.message);
+
+}
 
 
 setLoading(false);
@@ -119,6 +135,8 @@ onChange={(e)=>setPrompt(e.target.value)}
 <button
 
 onClick={generate}
+
+disabled={loading}
 
 className="
 mt-5

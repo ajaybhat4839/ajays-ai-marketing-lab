@@ -73,6 +73,10 @@ setOutput(data.result);
 
 
 
+const supabase = getSupabase();
+
+
+
 const {
 data:userData
 }=await supabase.auth.getUser();

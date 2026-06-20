@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 
 export default function Email(){
@@ -70,6 +70,10 @@ data.error || "Generation failed"
 
 
 setOutput(data.result);
+
+
+
+const supabase = getSupabase();
 
 
 
