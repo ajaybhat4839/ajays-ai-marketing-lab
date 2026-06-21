@@ -18,9 +18,11 @@
     "ai": "latest",
     "clsx": "^2.1.1",
     "framer-motion": "latest",
+    "jspdf": "^4.2.1",
     "lucide-react": "latest",
     "next": "16.2.9",
     "openai": "latest",
+    "pdf-parse": "^2.4.5",
     "react": "latest",
     "react-dom": "latest",
     "tailwind-merge": "^3.0.0"

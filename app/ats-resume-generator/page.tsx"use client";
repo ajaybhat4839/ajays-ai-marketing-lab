@@ -1,0 +1,83 @@
+import { useState } from "react";
+
+export default function ATSResumeGenerator(){
+
+const [resume,setResume] = useState("");
+const [job,setJob] = useState("");
+const [result,setResult] = useState("");
+const [loading,setLoading] = useState(false);
+
+
+async function generateATS(){
+
+if(!resume || !job) return;
+
+setLoading(true);
+
+const res = await fetch("/api/ats",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+resume,
+job
+})
+});
+
+
+const data = await res.json();
+
+setResult(data.result);
+
+setLoading(false);
+
+}
+
+
+return (
+
+<div className="p-10">
+
+<h1 className="text-3xl font-bold">
+AI ATS Resume Generator
+</h1>
+
+
+<textarea
+className="border p-3 w-full mt-5"
+rows={10}
+placeholder="Paste your resume here..."
+onChange={(e)=>setResume(e.target.value)}
+/>
+
+
+<textarea
+className="border p-3 w-full mt-5"
+rows={8}
+placeholder="Paste job description here..."
+onChange={(e)=>setJob(e.target.value)}
+/>
+
+
+<button
+onClick={generateATS}
+className="bg-black text-white px-6 py-3 mt-5 rounded"
+>
+
+{loading ? "Generating..." : "Generate ATS Resume"}
+
+</button>
+
+
+<div className="mt-8 whitespace-pre-wrap">
+
+{result}
+
+</div>
+
+
+</div>
+
+)
+
