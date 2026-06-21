@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { askAI } from "@/lib/ai";
 import { supabase } from "@/lib/supabase";
